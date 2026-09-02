@@ -74,6 +74,7 @@ Client / Frontend
        │
        ▼
     Supabase
+  ```
     
 ##  Team & Module Ownership
 
