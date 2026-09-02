@@ -1,5 +1,3 @@
-# Q_order
-# Q_Order
 
 ## Q_Order — Restaurant Ordering & Real-Time Kitchen Management API
 
@@ -76,11 +74,11 @@ Client / Frontend
        │
        ▼
     Supabase
-
+    
 ##  Team & Module Ownership
 
 | Team Member | Module |
-|-------------|--------|
+|---|---|
 | Gurram Sruthi | Super Admin Portal & SaaS Management |
 | Karthik Kondameedi | Authentication & Floor Management |
 | Kode Yesubabu | Menu & Catalog Management |
