@@ -1,9 +1,14 @@
 import crypto from "crypto";
-import razorpay from "../config/razorpay.js";
+import razorpay from "../sockets/gateways/razorpay.gateway.js";
 import { createPaymentLedger,
          updatePaymentLedgerStatus,
          createCashPaymentRequest
  } from "../repositories/payment.repository.js";
+
+ import {
+    validatePaymentIntent,
+    validateCashRequest
+ } from "../validators/payment.validator.js";
 
 export const createPaymentIntent = async ({
     tenantId,
@@ -13,33 +18,13 @@ export const createPaymentIntent = async ({
     splitDetails
 })  => {
 
-    //validating tenant
-    if (!tenantId){
-        const error = new Error("X-Tenant-ID header is required");
-        error.statusCode=400;
-        throw error;
-    }
+    validatePaymentIntent({
+        tenantId,
+        orderId,
+        amount,
+        currency
+    });
 
-    //validating order
-    if(!orderId){
-        const error = new Error("Order ID is required");
-        error.statusCode = 400;
-        throw error;
-    }
-
-    //validating amount
-    if(!amount || Number(amount) <= 0) {
-        const error = new Error("Amount must be greater than 0");
-        error.statusCode = 400;
-        throw error;
-    }
-
-    //validating currency
-    if(!currency){
-        const error = new Error("Currency is required");
-        error.statusCode = 400;
-        throw error;
-    }
     
     //Creating Razorpay order
     const razorpayOrder = await razorpay.orders.create({
@@ -150,33 +135,17 @@ export const createCashRequest = async({
     amount
 }) =>{
 
-    //validating tenant
-    if(!tenantId){
-        const error = new Error("X-tenant-ID header is required");
-        error.statusCode=400;
-        throw error;
-    }
-
-    //validating order
-    if(!orderId){
-        const error = new Error("Order ID is required");
-        error.statusCode = 400;
-        throw error;
-
-    }
-
-    //validating amount 
-    if(!amount|| Number(amount)<=0){
-        const error = new Error("Amount must be greater than 0");
-        error.statusCode=400;
-        throw error;
-
-    }
+    validateCashRequest({
+        tenantId,
+        orderId,
+        amount
+    });
 
     const cashRequest = await createCashPaymentRequest({
         tenantId,
         orderId,
         amount
     });
+    
     return cashRequest;
 }
