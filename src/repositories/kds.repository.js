@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
 
+
 const getOrdersByStation = async (
   stationId,
   tenantId,
@@ -74,8 +75,11 @@ const updateItemStatusInDb = async (
 
   const result = await pool.query(query, values);
 
+
   return result.rows[0];
 };
+
+
 const getKdsEvents = async (
   tenantId,
   branchId,
@@ -106,6 +110,8 @@ const getKdsEvents = async (
 
   return result.rows;
 };
+
+
 const createPrintJob = async (
   tenantId,
   branchId,
@@ -143,10 +149,10 @@ const createPrintJob = async (
   return result.rows[0];
 };
 
+
 export {
   getOrdersByStation,
   updateItemStatusInDb,
   getKdsEvents,
   createPrintJob
-
 };

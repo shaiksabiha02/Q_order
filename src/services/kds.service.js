@@ -17,46 +17,41 @@ const getKdsOrders = async (
     throw new Error("Invalid station_id");
   }
 
-  const orders = await getOrdersByStation(
+  return await getOrdersByStation(
     stationId,
     tenantId,
     branchId
   );
-
-  return orders;
 };
 
 
 const updateItemStatus = async (
-  itemId,
-  status,
   tenantId,
-  branchId
+  branchId,
+  itemId,
+  status
 ) => {
-  const item = await updateItemStatusInDb(
+  return await updateItemStatusInDb(
     itemId,
     status,
     tenantId,
     branchId
   );
-
-  return item;
 };
 
 
-const getKdsSync = async (
+const syncKds = async (
   tenantId,
   branchId,
   lastEventId
 ) => {
-  const events = await getKdsEvents(
+  return await getKdsEvents(
     tenantId,
     branchId,
     lastEventId
   );
-
-  return events;
 };
+
 
 const printKot = async (
   tenantId,
@@ -65,20 +60,19 @@ const printKot = async (
   printerIp,
   rawBytes
 ) => {
-  const job = await createPrintJob(
+  return await createPrintJob(
     tenantId,
     branchId,
     orderId,
     printerIp,
     rawBytes
   );
-
-  return job;
 };
+
 
 export {
   getKdsOrders,
   updateItemStatus,
-  getKdsSync,
+  syncKds,
   printKot
 };

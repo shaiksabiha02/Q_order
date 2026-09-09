@@ -1,15 +1,15 @@
 import express from "express";
 
-import { getOrders } from "../controllers/kds_getorder.js";
-import { updateStatus } from "../controllers/kds_updatestatus.js";
-import { syncKds } from "../controllers/kds_sync.js";
-import { printKot } from "../controllers/kds_printkot.js";
+import { getOrders } from "../controllers/kdsgetorder.controller.js";
+import { updateItemStatus } from "../controllers/kdsupdatestatus.controller.js";
+import { syncKds } from "../controllers/kdssync.controller.js";
+import { printKot } from "../controllers/kdsprintkot.controller.js";
 
 const router = express.Router();
 
 router.get("/orders", getOrders);
 
-router.patch("/items/:item_id/status", updateStatus);
+router.patch("/items/:item_id/status", updateItemStatus);
 
 router.get("/sync", syncKds);
 
