@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import logger from "../config/logger.js";
 
 async function createPaymentTables() {
     try {
@@ -18,7 +19,7 @@ async function createPaymentTables() {
             );
         `);
 
-        console.log("Payment Ledger table created");
+        logger.info("Payment Ledger table created");
 
         
         // Cash Payment Requests Table
@@ -33,12 +34,12 @@ async function createPaymentTables() {
             );
         `);
 
-        console.log("Cash Payment Requests table created");
+        logger.info("Cash Payment Requests table created");
 
         process.exit();
 
     } catch (error) {
-        console.log("Migration failed:", error);
+        logger.info("Migration failed:", error);
         process.exit(1);
     }
 }

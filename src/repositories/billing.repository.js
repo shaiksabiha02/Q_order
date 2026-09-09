@@ -18,7 +18,7 @@ export const getBillingSummary = async ({
             (
                 o.total_amount
                 + COALESCE(c.platform_fee, 0)
-                - COALESCE(c.discount, 0)
+                
             ) AS total,
 
             COALESCE(
@@ -35,7 +35,7 @@ export const getBillingSummary = async ({
             (
                 o.total_amount
                 + COALESCE(c.platform_fee, 0)
-                - COALESCE(c.discount, 0)
+                
             )
             -
             COALESCE(
@@ -52,13 +52,16 @@ export const getBillingSummary = async ({
             o.created_at
 
         FROM orders o
+        
+        LEFT JOIN cart_items ci
+             ON o.cart_item_id = ci.id
 
         LEFT JOIN carts c
-            ON o.cart_id = c.id
+             ON ci.cart_id = c.id
 
         LEFT JOIN payment_ledger pl
-            ON pl.order_id = o.id
-
+             ON pl.order_id = o.id
+             
         WHERE o.id = $1
         AND o.tenant_id = $2
 
@@ -104,13 +107,16 @@ export const getOrderForSplit = async ({
             (
                 o.total_amount
                 + COALESCE(c.platform_fee, 0)
-                - COALESCE(c.discount, 0)
+                
             ) AS final_total
 
         FROM orders o
 
+        LEFT JOIN cart_items ci
+            ON o.cart_item_id = ci.id
+
         LEFT JOIN carts c
-            ON o.cart_id = c.id
+            ON ci.cart_id = c.id
 
         WHERE o.id = $1
         AND o.tenant_id = $2;

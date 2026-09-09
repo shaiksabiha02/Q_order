@@ -11,7 +11,7 @@ const payload = JSON.stringify({
     payment: {
       entity: {
         id: "pay_test123",
-        order_id: "order_TZZ13iY21wElDu"
+        order_id: "order_TZuF2D2Cg1XDCq"
       }
     }
   }
