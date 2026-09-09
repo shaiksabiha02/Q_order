@@ -1,14 +1,60 @@
 import { WebSocketServer,WebSocket } from "ws";
 import { cartEvents } from "../../events/cart.event.js";
 import { socketAuthMiddleware } from "../socket.auth.middleware.js";
-
+import { getCartIdByGuestId } from "../../services/cart.service.js";
+import logger from "../../config/logger.js";
 const cartRooms = new Map();
 
 export function createTableCartSocket(server){
+        console.log("🔥 createTableCartSocket() CALLED");
+
     const wss = new WebSocketServer({
-        server,
-        path:"/ws/v1/table-cart"
+        noServer:true
     });
+    /*server.on("upgrade",(request,socket,head)=>{
+        const url = new URL(
+            request.url,
+            `http://${request.headers.host}`
+        );
+        if (url.pathname!=="/ws/v1/table-cart"){
+            return;
+        }
+        wss.handleUpgrade(request,socket,head,(ws)=>{
+            wss.emit("connection",ws,request);
+        });
+    });*/
+server.on("upgrade", (request, socket, head) => {
+
+    console.log("🔥 WEBSOCKET UPGRADE RECEIVED");
+    console.log("Request URL:", request.url);
+
+    const url = new URL(
+        request.url,
+        `http://${request.headers.host}`
+    );
+
+    console.log("WebSocket path:", url.pathname);
+
+    if (url.pathname !== "/ws/v1/table-cart") {
+        console.log("❌ WebSocket path does not match");
+        return;
+    }
+
+    console.log("✅ WebSocket path matched");
+
+    wss.handleUpgrade(request, socket, head, (ws) => {
+
+        console.log("🔥 WebSocket upgrade successful");
+
+        wss.emit("connection", ws, request);
+    });
+});
+
+
+
+
+
+
     wss.on("connection",async(ws,request)=>{
         // the authenticated 
         const authenticated = socketAuthMiddleware(ws,request);
@@ -16,27 +62,12 @@ export function createTableCartSocket(server){
             return;
         }
         const guestId = ws.guestId;
-        console.log(`Guest${guestId} connected to table cart`);
-
-
-
-
-        // =========================
-        // GET CART
-        // =========================
-
-        /*
-         * Get cart_id using guestId
-         *
-         * Example:
-         *
-         * const cartId = await getCartIdByGuestId(guestId);
-         */
-
-        const cartId = null;//temporaray 
-        //const cartId = await getCartIdByGuestId(guestId);
+        logger.info(`Guest${guestId} connected to table cart`);
+        
+        const cart = await getCartIdByGuestId(guestId);
+        const cartId = cart?.id;
         if(!cartId){
-            console.log(`No active cart found for guests ${guestId}`);
+            logger.info(`No active cart found for guests ${guestId}`);
             ws.close(1008,"Cart not found");
             return;
         }
@@ -48,7 +79,7 @@ export function createTableCartSocket(server){
         }
         cartRooms.get(cartId).add(ws);
         ws.cartId = cartId;
-        console.log(`Gusts ${guestId} joined Cart ${cartId}`);
+        logger.info(`Gusts ${guestId} joined Cart ${cartId}`);
         // disconnecting
 
         ws.on("close",()=>{
@@ -60,7 +91,7 @@ export function createTableCartSocket(server){
                 }
             }
 
-            console.log(`Guests ${guestId} disconnected from Cart ${cartId}`);
+            logger.info(`Guests ${guestId} disconnected from Cart ${cartId}`);
 
         });
     });
