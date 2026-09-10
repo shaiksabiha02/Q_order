@@ -25,6 +25,7 @@ export class OrderRepository {
     const query = `
       SELECT 
         c.id as cart_id,
+        c.guest_id,
         c.branch_id,
         c.table_id,
         c.discount,
@@ -54,6 +55,7 @@ export class OrderRepository {
       table_id,
       idempotency_key,
       cart_item_id,
+      guest_id,
       subtotal,
       tax_amount,
       total_amount,
@@ -63,8 +65,8 @@ export class OrderRepository {
     const query = `
       INSERT INTO orders (
         tenant_id, branch_id, table_id, idempotency_key,
-        status, subtotal, tax_amount, total_amount, cart_item_id
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        guest_id, status, subtotal, tax_amount, total_amount, cart_item_id
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *;
     `;
     const values = [
@@ -72,6 +74,7 @@ export class OrderRepository {
       branch_id,
       table_id,
       idempotency_key,
+      guest_id,
       status,
       subtotal,
       tax_amount,

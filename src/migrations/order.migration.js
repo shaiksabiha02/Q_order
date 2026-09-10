@@ -14,7 +14,8 @@ async function createTable() {
     tax_amount DECIMAL(10,2) NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    cart_item_id UUID  REFERENCES cart_items(id) ON DELETE CASCADE
+    cart_item_id UUID  REFERENCES cart_items(id) ON DELETE CASCADE,
+    guest_id UUID NULL
 
     );
     

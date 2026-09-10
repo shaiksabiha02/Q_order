@@ -52,6 +52,7 @@ export class OrderService {
       }
 
       const tableId = cartRows[0].table_id;
+      const guestId = cartRows[0].guest_id;
       const targetBranchId = cartRows[0].branch_id || branchId;
       const discount = parseFloat(cartRows[0].discount || 0);
       const platformFee = parseFloat(cartRows[0].platform_fee || 0);
@@ -79,6 +80,7 @@ export class OrderService {
         tenant_id: tenantId,
         branch_id: targetBranchId,
         table_id: tableId,
+        guest_id: guestId,
         idempotency_key: idempotencyKey,
         cart_item_id: cart_item_id,
         subtotal: parseFloat(subtotal.toFixed(2)),
