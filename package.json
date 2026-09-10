@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "swagger": "node swagger.js",
+    "seed:assistance": "node src/seeders/assistance.seeder.js",
     "test": "jest"
   },
   "dependencies": {
@@ -15,10 +17,13 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
+    "joi": "^18.2.8",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
+    "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "jest": "^30.0.0",
