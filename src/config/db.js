@@ -10,4 +10,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
+pool.query("SELECT 1")
+  .then(() => logger.info("PostgreSQL connected successfully"));
+
 export default pool;
