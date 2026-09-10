@@ -13,7 +13,18 @@ const swaggerOptions = {
         url: "http://localhost:3000",
       },
     ],
+    tags: [
+        {
+            name: "Billing",
+            description: "Billing and bill splitting APIs",
+        },
+        {
+            name: "Payments",
+            description: "Payment and cash request APIs",
+        },
+    ],
   },
+  
   apis: [
     "./src/routes/billing.route.js",
     "./src/routes/payment.route.js",

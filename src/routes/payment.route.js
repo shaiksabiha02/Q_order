@@ -4,12 +4,18 @@ import { createPaymentIntentController,
          paymentWebhookController,
          createCashRequestController
  } from "../controllers/payment.controller.js";
+
+ import authMiddleware from "../middlewares/auth.middleware.js";
+ 
  const router = express.Router();
+
  
  /**
  * @swagger
  * /api/v1/payments/create-intent:
  *   post:
+ *     tags:
+ *       - Payments
  *     summary: Create payment intent
  *     description: Initiates a Razorpay payment session and creates a pending payment ledger record.
  *     parameters:
@@ -26,11 +32,11 @@ import { createPaymentIntentController,
  *           schema:
  *             type: object
  *             required:
- *               - orderId
+ *               - order_id
  *               - amount
  *               - currency
  *             properties:
- *               orderId:
+ *               order_id:
  *                 type: string
  *                 example: 11e0b5f7-49bc-4259-b0f2-6b65f68342c2
  *               amount:
@@ -39,7 +45,7 @@ import { createPaymentIntentController,
  *               currency:
  *                 type: string
  *                 example: INR
- *               splitDetails:
+ *               split_details:
  *                 nullable: true
  *                 example: null
  *     responses:
@@ -50,13 +56,17 @@ import { createPaymentIntentController,
  *       500:
  *         description: Payment gateway error
  */
+ router.post("/create-intent",authMiddleware,createPaymentIntentController);
 
- router.post("/create-intent",createPaymentIntentController);
 
- /**
+
+
+/**
  * @swagger
  * /api/v1/payments/webhook:
  *   post:
+ *     tags:
+ *       - Payments
  *     summary: Process payment webhook
  *     description: Receives Razorpay webhook callbacks, verifies the HMAC signature, and processes payment.captured events.
  *     parameters:
@@ -89,10 +99,14 @@ import { createPaymentIntentController,
  */
  router.post("/webhook",paymentWebhookController);
 
+
+
  /**
  * @swagger
  * /api/v1/payments/cash-request:
  *   post:
+ *     tags:
+ *       - Payments
  *     summary: Create cash payment request
  *     description: Creates a cash collection request for Staff or POS.
  *     parameters:
@@ -109,10 +123,10 @@ import { createPaymentIntentController,
  *           schema:
  *             type: object
  *             required:
- *               - orderId
+ *               - order_id
  *               - amount
  *             properties:
- *               orderId:
+ *               order_id:
  *                 type: string
  *                 example: 11e0b5f7-49bc-4259-b0f2-6b65f68342c2
  *               amount:
@@ -126,5 +140,5 @@ import { createPaymentIntentController,
  *       500:
  *         description: Server error
  */
- router.post("/cash-request",createCashRequestController);
+ router.post("/cash-request",authMiddleware,createCashRequestController);
  export default router;

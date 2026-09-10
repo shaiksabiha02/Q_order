@@ -4,12 +4,16 @@ import {
   splitBillController,
 } from "../controllers/billing.controller.js";
 
+import authMiddleware from "../middlewares/auth.middleware.js";
+
 const router = express.Router();
 
 /**
  * @swagger
  * /api/v1/billing/summary:
  *   get:
+ *     tags:
+ *       - Billing
  *     summary: Get billing summary
  *     description: Fetch aggregated billing details including subtotal, tax, service charge, discount, total, paid amount, and balance.
  *     parameters:
@@ -33,13 +37,15 @@ const router = express.Router();
  *       404:
  *         description: Order not found
  */
-router.get("/summary", getBillingSummaryController);
+router.get("/summary",authMiddleware, getBillingSummaryController);
 
 
 /**
  * @swagger
  * /api/v1/billing/split:
  *   post:
+ *     tags:
+ *       - Billing
  *     summary: Split bill
  *     description: Calculate bill split using EQUAL or BY_ITEM split type.
  *     parameters:
@@ -92,6 +98,6 @@ router.get("/summary", getBillingSummaryController);
  *       404:
  *         description: Order not found
  */
-router.post("/split", splitBillController);
+router.post("/split",authMiddleware, splitBillController);
 
 export default router;
