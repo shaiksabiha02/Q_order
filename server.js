@@ -12,6 +12,7 @@ import logger from "./src/config/logger.js";
 
 import kdsRoutes from "./src/routes/kds.routes.js";
 import { createKdsSocket } from "./src/sockets/gateways/kds.socket.js";
+import { createTableCartSocket } from "./src/sockets/gateways/tablecart.socket.js";
 
 import authRoutes from "./src/routes/auth.routes.js";
 import diningTablesRoutes from "./src/routes/diningTables.routes.js";
@@ -67,5 +68,7 @@ const server = app.listen(PORT, () => {
 
 // Start KDS WebSocket
 createKdsSocket(server);
+createTableCartSocket(server);
+
 
 export default app;

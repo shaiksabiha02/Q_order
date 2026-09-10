@@ -1,36 +1,76 @@
 import { WebSocketServer, WebSocket } from "ws";
+
 import { updateItemStatus } from "../../services/kds.service.js";
 import { orderEvents } from "../../events/order.event.js";
 import logger from "../../config/logger.js";
 import { socketAuthMiddleware } from "../socket.auth.middleware.js";
+
 export const createKdsSocket = (server) => {
- const wss = new WebSocketServer({
-        server,
-        path: "/ws/v1/kds/stream"
+
+    const wss = new WebSocketServer({
+        noServer: true
     });
- wss.on("connection", (ws, request) => {
+
+    // ==========================================
+    // KDS WEBSOCKET UPGRADE
+    // ==========================================
+
+    server.on("upgrade", (request, socket, head) => {
+
+        const url = new URL(
+            request.url,
+            `http://${request.headers.host}`
+        );
+
+        if (url.pathname !== "/ws/v1/kds/stream") {
+            return;
+        }
+
+        logger.info("KDS WebSocket upgrade received");
+
+        wss.handleUpgrade(request, socket, head, (ws) => {
+            wss.emit("connection", ws, request);
+        });
+    });
+
+    // ==========================================
+    // KDS CONNECTION
+    // ==========================================
+
+    wss.on("connection", (ws, request) => {
+
         const authenticated = socketAuthMiddleware(ws, request);
 
         if (!authenticated) {
             return;
         }
+
         const {
             guest_id,
             tenant_id,
             branch_id,
             role
         } = ws.user;
-       if (!guest_id || !tenant_id || !branch_id) {
-              ws.close(
+
+        if (!guest_id || !tenant_id || !branch_id) {
+
+            ws.close(
                 1008,
                 "Invalid authentication claims"
             );
 
             return;
         }
+
         logger.info(
             `KDS authenticated - guest: ${guest_id}, tenant: ${tenant_id}, branch: ${branch_id}, role: ${role}`
         );
+
+        // ==========================================
+        // KDS → SERVER
+        // ITEM_STATUS_CHANGED
+        // ==========================================
+
         ws.on("message", async (message) => {
 
             try {
@@ -38,6 +78,7 @@ export const createKdsSocket = (server) => {
                 const data = JSON.parse(
                     message.toString()
                 );
+
                 if (data.event !== "ITEM_STATUS_CHANGED") {
 
                     ws.send(
@@ -49,6 +90,7 @@ export const createKdsSocket = (server) => {
 
                     return;
                 }
+
                 const {
                     order_item_id,
                     new_status
@@ -66,6 +108,7 @@ export const createKdsSocket = (server) => {
 
                     return;
                 }
+
                 if (
                     !["PREPARING", "READY"].includes(
                         new_status
@@ -82,20 +125,13 @@ export const createKdsSocket = (server) => {
                     return;
                 }
 
-
-                // ==========================================
-                // UPDATE THROUGH KDS SERVICE
-                // ==========================================
-
+                // Update through KDS service
                 const result = await updateItemStatus(
                     tenant_id,
                     branch_id,
                     order_item_id,
                     new_status
                 );
-
-
-                // Item not found
 
                 if (!result) {
 
@@ -110,11 +146,7 @@ export const createKdsSocket = (server) => {
                     return;
                 }
 
-
-                // ==========================================
-                // SEND ACKNOWLEDGEMENT
-                // ==========================================
-
+                // Acknowledgement
                 ws.send(
                     JSON.stringify({
                         event: "ITEM_STATUS_CHANGED_ACK",
@@ -128,7 +160,6 @@ export const createKdsSocket = (server) => {
                     `KDS message error: ${error.message}`
                 );
 
-
                 ws.send(
                     JSON.stringify({
                         event: "ERROR",
@@ -139,16 +170,12 @@ export const createKdsSocket = (server) => {
             }
         });
 
-
         // ==========================================
         // SERVER → KDS
         // NEW_ORDER_RECEIVED
         // ==========================================
 
         const sendNewOrder = (order) => {
-
-            // Only send orders belonging to
-            // the same tenant and branch
 
             if (
                 order.tenant_id !== tenant_id ||
@@ -157,13 +184,11 @@ export const createKdsSocket = (server) => {
                 return;
             }
 
-
             if (ws.readyState === WebSocket.OPEN) {
 
                 ws.send(
                     JSON.stringify({
                         event: "NEW_ORDER_RECEIVED",
-
                         data: {
                             order_id: order.order_id,
                             table_name: order.table_name,
@@ -174,12 +199,10 @@ export const createKdsSocket = (server) => {
             }
         };
 
-
         orderEvents.on(
             "NEW_ORDER_RECEIVED",
             sendNewOrder
         );
-
 
         // ==========================================
         // DISCONNECT
@@ -192,12 +215,10 @@ export const createKdsSocket = (server) => {
                 sendNewOrder
             );
 
-
             logger.info(
                 `KDS disconnected - guest: ${guest_id}`
             );
         });
-
 
         // ==========================================
         // ERROR
@@ -209,14 +230,11 @@ export const createKdsSocket = (server) => {
                 `KDS WebSocket error: ${error.message}`
             );
         });
-
     });
-
 
     logger.info(
         "KDS WebSocket started: /ws/v1/kds/stream"
     );
-
 
     return wss;
 };

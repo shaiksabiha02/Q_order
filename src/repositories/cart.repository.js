@@ -171,12 +171,12 @@ export const clearCart = async (data) => {
 export const getCartIdByGuestId = async(guest_id)=>{
     const result = await pool.query(
         `
-        SELECT DISTINCT c.id
-        FROM carts c
-        INNER JOIN cart_items ci
-        ON c.id = ci.cart_id
-        WHERE ci.guest_id = $1
-        AND  c.status = 'ACTIVE'
+        SELECT id
+        FROM carts
+        WHERE guest_id = $1
+         AND status ='ACTIVE'
+        LIMIT 1
+        
         `,
         [guest_id]
     );

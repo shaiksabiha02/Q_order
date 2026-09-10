@@ -37,7 +37,11 @@ export const updateItem = async (req, res, next) => {
     try {
         const cartItem = await cartService.updateCartItem(
             req.params.cart_item_id,
-            req.body
+            {
+                ...req.body,
+                table_id:req.headers["x-table-id"],
+                guest_id:req.headers["x-guest-id"]
+            }
         );
 
         res.status(200).json({
@@ -52,7 +56,10 @@ export const updateItem = async (req, res, next) => {
 export const removeItem = async (req, res, next) => {
     try {
         const cartItem = await cartService.removeCartItem(
-            req.params.cart_item_id
+            req.params.cart_item_id,{
+                table_id:req.headers["x-table-id"],
+                guest_id:req.headers["x-guest-id"]
+            }
         );
 
         res.status(200).json({
@@ -66,7 +73,11 @@ export const removeItem = async (req, res, next) => {
 
 export const clearCart = async (req, res, next) => {
     try {
-        const result = await cartService.clearCart(req.body);
+        const result = await cartService.clearCart({
+            ...req.body,
+            table_id:req.headers["x-table-id"],
+            guest_id:req.headers["x-guest-id"]
+        });
 
         res.status(200).json({
             success: true,
