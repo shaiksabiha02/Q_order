@@ -5,17 +5,17 @@ export const getCart = async (data) => {
 
     const result = await pool.query(
         `SELECT
-            c.id,
+            c.id AS cart_id,
             c.tenant_id,
             c.branch_id,
             c.table_id,
+            c.guest_id,
             c.status,
             c.discount,
             c.platform_fee,
             c.created_at,
             c.updated_at,
             ci.id AS cart_item_id,
-            ci.guest_id,
             ci.item_id,
             mi.name AS item_name,
             mi.base_price,
@@ -66,14 +66,16 @@ export const getCart = async (data) => {
         total
     };
 };
-export const getActiveCart = async (table_id) => {
+
+export const getActiveCart = async (table_id, guest_id) => {
     const result = await pool.query(
         `SELECT *
         FROM carts
         WHERE table_id = $1
+          AND guest_id = $2
           AND status = 'ACTIVE'
         LIMIT 1`,
-        [table_id]
+        [table_id, guest_id]
     );
 
     return result.rows[0];
@@ -81,7 +83,6 @@ export const getActiveCart = async (table_id) => {
 export const addCartItem = async (data) => {
     const {
         cart_id,
-        guest_id,
         item_id,
         variant_id,
         modifier_ids,
@@ -92,18 +93,16 @@ export const addCartItem = async (data) => {
     const result = await pool.query(
         `INSERT INTO cart_items (
             cart_id,
-            guest_id,
             item_id,
             variant_id,
             modifier_ids,
             qty,
             notes
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING *`,
         [
             cart_id,
-            guest_id,
             item_id,
             variant_id || null,
             modifier_ids || [],

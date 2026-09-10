@@ -7,7 +7,10 @@ export const getCartIdByGuestId = async(guest_id)=>{
     return await cartRepository.getCartIdByGuestId(guest_id);
 };
 export const addCartItem = async (data) => {
-    const cart = await cartRepository.getActiveCart(data.table_id);
+    const cart = await cartRepository.getActiveCart(
+        data.table_id,
+        data.guest_id
+    );
 
     if (!cart) {
         const error = new Error("Active cart not found");
