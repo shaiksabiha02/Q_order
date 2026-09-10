@@ -1,2 +1,2 @@
-import {EvenEmitter} from "events";
-export const orderEvents = new EvenEmitter();
+import {EventEmitter} from "events";
+export const orderEvents = new EventEmitter();

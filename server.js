@@ -7,7 +7,8 @@ import cartRouter from "./src/routes/cart.routes.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
 import { setupSwagger } from "./swagger.js";
 import logger from "./src/config/logger.js";
-
+import kdsRoutes from "./src/routes/kds.routes.js";
+import { createKdsSocket } from "./src/sockets/gateways/kds.socket.js";
 dotenv.config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/kds", kdsRoutes);
 
 app.use(errorHandler);
 
@@ -45,5 +47,20 @@ const server = app.listen(PORT, () => {
   logger.info(`Swagger UI: http://localhost:${PORT}/api-docs`);
   logger.info(`Cart API: http://localhost:${PORT}/api/v1/cart`);
 });
-
+createKdsSocket(server);
 export default app;
+
+app.use(express.json());
+
+
+/*pool.query("SELECT 1")
+  .then(() => {
+    logger.info("PostgreSQL connected successfully");
+  })
+  .catch((error) => {
+    logger.error(`PostgreSQL connection failed: ${error.message}`);
+  });
+
+app.listen(3000, () => {
+  logger.info("Server running on port 3000");
+});*/

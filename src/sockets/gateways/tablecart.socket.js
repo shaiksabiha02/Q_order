@@ -6,7 +6,6 @@ import logger from "../../config/logger.js";
 const cartRooms = new Map();
 
 export function createTableCartSocket(server){
-        console.log("🔥 createTableCartSocket() CALLED");
 
     const wss = new WebSocketServer({
         noServer:true
@@ -25,7 +24,7 @@ export function createTableCartSocket(server){
     });*/
 server.on("upgrade", (request, socket, head) => {
 
-    console.log("🔥 WEBSOCKET UPGRADE RECEIVED");
+    console.log("WEBSOCKET UPGRADE RECEIVED");
     console.log("Request URL:", request.url);
 
     const url = new URL(
@@ -36,15 +35,15 @@ server.on("upgrade", (request, socket, head) => {
     console.log("WebSocket path:", url.pathname);
 
     if (url.pathname !== "/ws/v1/table-cart") {
-        console.log("❌ WebSocket path does not match");
+        console.log(" WebSocket path does not match");
         return;
     }
 
-    console.log("✅ WebSocket path matched");
+    console.log("WebSocket path matched");
 
     wss.handleUpgrade(request, socket, head, (ws) => {
 
-        console.log("🔥 WebSocket upgrade successful");
+        console.log("WebSocket upgrade successful");
 
         wss.emit("connection", ws, request);
     });
@@ -96,7 +95,7 @@ server.on("upgrade", (request, socket, head) => {
         });
     });
 
-    // cart is mutated
+    
 
     cartEvents.on("CART_MUTATED",(cart)=>{
         const room = cartRooms.get(cart.cart_id);
