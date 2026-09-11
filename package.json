@@ -11,7 +11,8 @@
     "test:cart": "node src/tests/verify_cart.js",
     "migrate": "node src/migrations/order.migration.js",
     "migrate:cart": "node src/migrations/cart.migration.js",
-    "seed:cart": "node src/seeders/cart.seeder.js"
+    "seed:cart": "node src/seeders/cart.seeder.js",
+    "seed:assistance": "node src/seeders/assistance.seeder.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -22,6 +23,7 @@
     "joi": "^18.2.8",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
+    "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0",

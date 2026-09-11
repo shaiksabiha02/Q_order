@@ -11,11 +11,7 @@ export const createKdsSocket = (server) => {
         noServer: true
     });
 
-    // ==========================================
-    // KDS WEBSOCKET UPGRADE
-    // ==========================================
-
-    server.on("upgrade", (request, socket, head) => {
+ server.on("upgrade", (request, socket, head) => {
 
         const url = new URL(
             request.url,
@@ -33,9 +29,7 @@ export const createKdsSocket = (server) => {
         });
     });
 
-    // ==========================================
-    // KDS CONNECTION
-    // ==========================================
+    
 
     wss.on("connection", (ws, request) => {
 
@@ -66,10 +60,7 @@ export const createKdsSocket = (server) => {
             `KDS authenticated - guest: ${guest_id}, tenant: ${tenant_id}, branch: ${branch_id}, role: ${role}`
         );
 
-        // ==========================================
-        // KDS → SERVER
-        // ITEM_STATUS_CHANGED
-        // ==========================================
+       
 
         ws.on("message", async (message) => {
 
@@ -146,7 +137,6 @@ export const createKdsSocket = (server) => {
                     return;
                 }
 
-                // Acknowledgement
                 ws.send(
                     JSON.stringify({
                         event: "ITEM_STATUS_CHANGED_ACK",
@@ -169,12 +159,6 @@ export const createKdsSocket = (server) => {
                 );
             }
         });
-
-        // ==========================================
-        // SERVER → KDS
-        // NEW_ORDER_RECEIVED
-        // ==========================================
-
         const sendNewOrder = (order) => {
 
             if (
@@ -203,11 +187,6 @@ export const createKdsSocket = (server) => {
             "NEW_ORDER_RECEIVED",
             sendNewOrder
         );
-
-        // ==========================================
-        // DISCONNECT
-        // ==========================================
-
         ws.on("close", () => {
 
             orderEvents.off(
@@ -219,11 +198,6 @@ export const createKdsSocket = (server) => {
                 `KDS disconnected - guest: ${guest_id}`
             );
         });
-
-        // ==========================================
-        // ERROR
-        // ==========================================
-
         ws.on("error", (error) => {
 
             logger.error(

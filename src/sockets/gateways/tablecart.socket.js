@@ -11,14 +11,11 @@ export function createTableCartSocket(server) {
         noServer: true
     });
 
-    // Handle WebSocket upgrade
     server.on("upgrade", (request, socket, head) => {
         const url = new URL(
             request.url,
             `http://${request.headers.host}`
         );
-
-        // Only handle table-cart WebSocket
         if (url.pathname !== "/ws/v1/table-cart") {
             return;
         }
@@ -29,8 +26,6 @@ export function createTableCartSocket(server) {
             wss.emit("connection", ws, request);
         });
     });
-
-    // New WebSocket connection
     wss.on("connection", async (ws, request) => {
         try {
             // 1. Authenticate JWT
@@ -39,15 +34,11 @@ export function createTableCartSocket(server) {
             if (!authenticated) {
                 return;
             }
-
-            // 2. Get information from JWT
             const {
                 guest_id,
                 tenant_id,
                 branch_id
             } = ws.user;
-
-            // 3. Validate required JWT claims
             if (!guest_id || !tenant_id || !branch_id) {
                 logger.error(
                     "Table Cart WebSocket: required JWT claims are missing"
@@ -60,8 +51,6 @@ export function createTableCartSocket(server) {
             logger.info(
                 `Guest ${guest_id} connected to Table Cart WebSocket`
             );
-
-            // 4. Find the guest's active cart
             const cart = await getCartIdByGuestId(guest_id);
 
             const cartId = cart?.id;
@@ -74,18 +63,12 @@ export function createTableCartSocket(server) {
                 ws.close(1008, "Cart not found");
                 return;
             }
-
-            // 5. Create cart room if it doesn't exist
             if (!cartRooms.has(cartId)) {
                 cartRooms.set(cartId, new Set());
             }
-
-            // 6. Add guest's WebSocket connection to the cart room
             const room = cartRooms.get(cartId);
 
             room.add(ws);
-
-            // 7. Store connection information
             ws.guestId = guest_id;
             ws.cartId = cartId;
             ws.tenantId = tenant_id;
@@ -94,15 +77,11 @@ export function createTableCartSocket(server) {
             logger.info(
                 `Guest ${guest_id} joined Cart ${cartId}`
             );
-
-            // 8. Handle disconnect
             ws.on("close", () => {
                 const room = cartRooms.get(cartId);
 
                 if (room) {
                     room.delete(ws);
-
-                    // Remove empty room
                     if (room.size === 0) {
                         cartRooms.delete(cartId);
                     }
@@ -112,8 +91,6 @@ export function createTableCartSocket(server) {
                     `Guest ${guest_id} disconnected from Cart ${cartId}`
                 );
             });
-
-            // 9. Handle socket errors
             ws.on("error", (error) => {
                 logger.error(
                     `Table Cart WebSocket error: ${error.message}`
@@ -128,12 +105,8 @@ export function createTableCartSocket(server) {
             ws.close(1011, "Internal server error");
         }
     });
-
-    // Listen for cart changes from Cart Service
     cartEvents.on("CART_MUTATED", (cart) => {
         const room = cartRooms.get(cart.cart_id);
-
-        // Nobody connected to this cart
         if (!room) {
             return;
         }
@@ -146,8 +119,6 @@ export function createTableCartSocket(server) {
                 cart_items: cart.cart_items
             }
         });
-
-        // Send update to every guest in this cart
         room.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(message);

@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 
+
 import cors from "cors";
 import helmet from "helmet";
 
@@ -15,20 +16,20 @@ import kdsRoutes from "./src/routes/kds.routes.js";
 import { createKdsSocket } from "./src/sockets/gateways/kds.socket.js";
 import { createTableCartSocket } from "./src/sockets/gateways/tablecart.socket.js";
 import { createOrderTrackingSocket } from "./src/sockets/gateways/ordertracking.socket.js";
-
+import { createStaffAlertsSocket } from "./src/sockets/gateways/staffalerts.socket.js";
 
 import authRoutes from "./src/routes/auth.routes.js";
 import diningTablesRoutes from "./src/routes/diningTables.routes.js";
 import restaurantRoutes from "./src/routes/restaurant.routes.js";
 
 import orderRoutes from "./src/routes/order.routes.js";
+import assistanceRoutes from "./src/routes/assistance.routes.js";
 
 
 
 dotenv.config();
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -64,6 +65,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/staff/tables", diningTablesRoutes);
 app.use("/api/v1/restaurant", restaurantRoutes);
 app.use('/api/v1/orders', orderRoutes);
+app.use("/api/v1", assistanceRoutes);
 
 // Error handler
 app.use(errorHandler);
@@ -79,7 +81,7 @@ const server = app.listen(PORT, () => {
 createKdsSocket(server);
 createTableCartSocket(server);
 createOrderTrackingSocket(server);
-
+createStaffAlertsSocket(server);
 
 export default app;
 
