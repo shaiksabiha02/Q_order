@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+
 import cors from "cors";
 import helmet from "helmet";
 
@@ -13,14 +14,21 @@ import logger from "./src/config/logger.js";
 import kdsRoutes from "./src/routes/kds.routes.js";
 import { createKdsSocket } from "./src/sockets/gateways/kds.socket.js";
 import { createTableCartSocket } from "./src/sockets/gateways/tablecart.socket.js";
+import { createOrderTrackingSocket } from "./src/sockets/gateways/ordertracking.socket.js";
+
 
 import authRoutes from "./src/routes/auth.routes.js";
 import diningTablesRoutes from "./src/routes/diningTables.routes.js";
 import restaurantRoutes from "./src/routes/restaurant.routes.js";
 
+import orderRoutes from "./src/routes/order.routes.js";
+
+
+
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -55,6 +63,7 @@ app.use("/api/v1/kds", kdsRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/staff/tables", diningTablesRoutes);
 app.use("/api/v1/restaurant", restaurantRoutes);
+app.use('/api/v1/orders', orderRoutes);
 
 // Error handler
 app.use(errorHandler);
@@ -69,6 +78,8 @@ const server = app.listen(PORT, () => {
 // Start KDS WebSocket
 createKdsSocket(server);
 createTableCartSocket(server);
+createOrderTrackingSocket(server);
 
 
 export default app;
+
