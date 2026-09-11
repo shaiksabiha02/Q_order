@@ -5,11 +5,11 @@ import helmet from "helmet";
 import logger from "./src/config/logger.js";
 import errorMiddleware from "./src/middlewares/error.middleware.js";
 
-import authRoutes from "./src/routes/v1/auth.routes.js";
-import tenantsRoutes from "./src/routes/v1/tenants.routes.js";
-import branchesRoutes from "./src/routes/v1/branches.routes.js";
-import paymentGatewaysRoutes from "./src/routes/v1/payment_gateways.routes.js";
-import analyticsRoutes from "./src/routes/v1/analytics.routes.js";
+import authRoutes from "./src/routes/auth.routes.js";
+import tenantsRoutes from "./src/routes/tenants.routes.js";
+import branchesRoutes from "./src/routes/branches.routes.js";
+import paymentGatewaysRoutes from "./src/routes/payment_gateways.routes.js";
+import analyticsRoutes from "./src/routes/analytics.routes.js";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger-output.json" with { type: "json" };
