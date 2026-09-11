@@ -1,16 +1,14 @@
 import logger from "../config/logger.js";
-
 const errorMiddleware = (err, req, res, next) => {
-    logger.error({
-        message: err.message,
-        method: req.method,
-        url: req.originalUrl,
-        stack: err.stack
-    });
+    
+    logger.error("Error:",err);
 
-    return res.status(500).json({
-        message: "Internal server error"
+    const statusCode = err.statusCode || 500;
+
+    res.status(statusCode).json({
+        success:false,
+        message:err.message || "Internal server Error"
     });
 };
-
 export default errorMiddleware;
+
