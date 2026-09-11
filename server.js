@@ -10,7 +10,7 @@ import swaggerSpec from "./swagger.js";
 import "./src/config/db.js";
 import logger from "./src/config/logger.js";
 
-import authRoutes from "./src/routes/auth.routes.js";
+import authRoutes from "./src/routes/adminAuth.routes.js";
 import tenantsRoutes from "./src/routes/tenants.routes.js";
 import branchesRoutes from "./src/routes/branches.routes.js";
 import paymentGatewaysRoutes from "./src/routes/payment_gateways.routes.js";
