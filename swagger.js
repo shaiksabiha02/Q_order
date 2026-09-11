@@ -40,11 +40,11 @@ const doc = {
 };
 
 const endpointsFiles = [
-    "./src/routes/v1/auth.routes.js",
-    "./src/routes/v1/tenants.routes.js",
-    "./src/routes/v1/branches.routes.js",
-    "./src/routes/v1/payment_gateways.routes.js",
-    "./src/routes/v1/analytics.routes.js"
+    "./src/routes/auth.routes.js",
+    "./src/routes/tenants.routes.js",
+    "./src/routes/branches.routes.js",
+    "./src/routes/payment_gateways.routes.js",
+    "./src/routes/analytics.routes.js"
 ];
 
 swaggerAutogen()(outputFile, endpointsFiles, doc)
@@ -737,6 +737,5 @@ const options = {
   apis: ['./src/routes/*.js'],
 };
 
-const swaggerSpec = swaggerJSDoc(options);
 
 export default swaggerSpec;
