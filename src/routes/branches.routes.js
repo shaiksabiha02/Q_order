@@ -1,11 +1,11 @@
 import express from "express";
 
-import branchesController from "../../controllers/branches.controller.js";
+import branchesController from "../controllers/branches.controller.js";
 
 import {
     validateCreateBranch,
     validateBranchTenantId
-} from "../../validators/branches.validator.js";
+} from "../validators/branches.validator.js";
 
 const router = express.Router();
 

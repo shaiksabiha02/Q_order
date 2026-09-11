@@ -1,12 +1,12 @@
 import express from "express";
 
-import tenantsController from "../../controllers/tenants.controller.js";
+import tenantsController from "../controllers/tenants.controller.js";
 
 import {
     validateCreateTenant,
     validateTenantId,
     validateTenantStatus
-} from "../../validators/tenants.validator.js";
+} from "../validators/tenants.validator.js";
 
 const router = express.Router();
 
