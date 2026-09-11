@@ -16,6 +16,8 @@ import { createPaymentIntentController,
  *   post:
  *     tags:
  *       - Payments
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create payment intent
  *     description: Initiates a Razorpay payment session and creates a pending payment ledger record.
  *     parameters:
@@ -107,6 +109,8 @@ import { createPaymentIntentController,
  *   post:
  *     tags:
  *       - Payments
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create cash payment request
  *     description: Creates a cash collection request for Staff or POS.
  *     parameters:
@@ -124,11 +128,16 @@ import { createPaymentIntentController,
  *             type: object
  *             required:
  *               - order_id
+ *               - guest_id
  *               - amount
  *             properties:
  *               order_id:
  *                 type: string
  *                 example: 11e0b5f7-49bc-4259-b0f2-6b65f68342c2
+ *               guest_id:
+ *                 type: string
+ *                 format: uuid
+ *                 example: 123e4567-e89b-12d3-a456-426614174000
  *               amount:
  *                 type: number
  *                 example: 840

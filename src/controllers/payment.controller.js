@@ -50,6 +50,7 @@ export const paymentWebhookController = async (req, res) => {
 export const createCashRequestController = async (req,res)=>{
     const {
         order_id,
+        guest_id,
         amount
     }=req.body;
     const tenantId=req.headers["x-tenant-id"];
@@ -57,6 +58,7 @@ export const createCashRequestController = async (req,res)=>{
     const result=await createCashRequest({
         tenantId,
         orderId:order_id,
+        guestId:guest_id,
         amount:amount
     });
 

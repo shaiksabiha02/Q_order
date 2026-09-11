@@ -86,19 +86,22 @@ import pool from "../config/db.js";
  export const createCashPaymentRequest = async({
     tenantId,
     orderId,
+    guestId,
     amount
  })=>{
     const query=`
     INSERT INTO cash_payment_requests(
     tenant_id,
     order_id,
+    guest_id,
     amount
     )
-    VALUES ($1,$2,$3)
+    VALUES ($1,$2,$3,$4)
     RETURNING
     id,
     tenant_id,
     order_id,
+    guest_id,
     amount,
     status,
     created_at;
@@ -108,6 +111,7 @@ import pool from "../config/db.js";
     const values =[
         tenantId,
         orderId,
+        guestId,
         amount
     ];
     const result =await pool.query(query,values);

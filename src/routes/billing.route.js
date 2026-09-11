@@ -14,8 +14,10 @@ const router = express.Router();
  *   get:
  *     tags:
  *       - Billing
+ *     security:
+ *       - bearerAuth: []
  *     summary: Get billing summary
- *     description: Fetch aggregated billing details including subtotal, tax, service charge, discount, total, paid amount, and balance.
+ *     description: Fetch aggregated billing details.
  *     parameters:
  *       - in: header
  *         name: x-tenant-id
@@ -46,6 +48,8 @@ router.get("/summary",authMiddleware, getBillingSummaryController);
  *   post:
  *     tags:
  *       - Billing
+ *     security:
+ *       - bearerAuth: []
  *     summary: Split bill
  *     description: Calculate bill split using EQUAL or BY_ITEM split type.
  *     parameters:

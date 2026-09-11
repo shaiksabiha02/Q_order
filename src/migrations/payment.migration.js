@@ -31,6 +31,7 @@ async function createPaymentTables() {
                 amount DECIMAL(10,2) NOT NULL,
                 status VARCHAR(30) DEFAULT 'REQUESTED' CHECK (status IN ('REQUESTED','ACCEPTED','COLLECTED','CANCELLED')),
                 created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+                guest_id UUID NOT NULL 
             );
         `);
 

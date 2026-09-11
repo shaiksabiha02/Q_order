@@ -132,18 +132,21 @@ export const processPaymentWebhook = async ({
 export const createCashRequest = async({
     tenantId,
     orderId,
+    guestId,
     amount
 }) =>{
 
     validateCashRequest({
         tenantId,
         orderId,
+        guestId,
         amount
     });
 
     const cashRequest = await createCashPaymentRequest({
         tenantId,
         orderId,
+        guestId,
         amount
     });
     

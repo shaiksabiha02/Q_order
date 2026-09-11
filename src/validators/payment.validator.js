@@ -62,6 +62,13 @@ const cashRequestSchema = Joi.object({
             "string.empty": "Order ID is required"
         }),
 
+    guestId: Joi.string()
+    .required()
+    .messages({
+        "any.required":"Guest ID is required",
+        "string.empty":"Guest ID is required"
+    }),
+
     amount: Joi.number()
         .positive()
         .required()
