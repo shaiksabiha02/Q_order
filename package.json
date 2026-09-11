@@ -8,8 +8,6 @@
     "start": "node server.js",
     "dev": "npm run swagger && nodemon server.js",
     "swagger": "node swagger.js",
-    "test": "jest"
-    "dev": "nodemon server.js",
     "test": "jest",
     "test:cart": "node src/tests/verify_cart.js",
     "migrate": "node src/migrations/order.migration.js",
@@ -26,12 +24,8 @@
     "joi": "^18.2.8",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
-
-   
     "twilio": "^6.1.0",
-    "ws": "^8.21.3"
-
-
+    "ws": "^8.21.3",
     "razorpay": "^2.9.8",
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
@@ -45,4 +39,3 @@
     "supertest": "^7.1.4"
   }
 }
-
