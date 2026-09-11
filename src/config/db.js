@@ -8,6 +8,4 @@ const pool = new Pool({
 });
 pool.query("SELECT 1")
     .then(() => logger.info("Database connection established successfully."));
-
-
 export default pool;

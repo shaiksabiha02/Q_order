@@ -1,43 +1,108 @@
-import authService from "../services/auth.service.js";
+import {
+    staffLogin,
+    refreshAccessToken,
+    logoutStaff,
+} from "../services/auth.service.js";
 
-const login = async (req, res) => {
+import logger from "../config/logger.js";
+
+export const loginStaff = async (req, res) => {
     try {
-        const {
-            username,
-            password
-        } = req.body;
+        const { username, pin } = req.body;
 
-        const user = await authService.login(
+        const result = await staffLogin(
             username,
-            password
+            pin
         );
 
-        if (!user) {
-            return res.status(401).json({
-                message: "Invalid username or password"
-            });
-        }
-
         return res.status(200).json({
-            message: "Login successful",
-            data: {
-                id: user.id,
-                username: user.username,
-                role: user.role,
-                tenant_id: user.tenant_id,
-                branch_id: user.branch_id
-            }
+            success: true,
+            message: "Staff login successful",
+            data: result,
         });
 
     } catch (error) {
-        console.error("Login error:", error);
+        logger.error("Staff Login Error", {
+            error: error.message,
+        });
+
+        if (error.message === "Invalid username or PIN") {
+            return res.status(401).json({
+                success: false,
+                message: error.message,
+            });
+        }
 
         return res.status(500).json({
-            message: "Internal server error"
+            success: false,
+            message: "Internal server error",
         });
     }
 };
 
-export default {
-    login
+export const refreshToken = async (req, res) => {
+    try {
+        const { refresh_token } = req.body;
+
+        const result = await refreshAccessToken(
+            refresh_token
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Token refreshed successfully",
+            data: result,
+        });
+
+    } catch (error) {
+        logger.error("Refresh Token Error", {
+            error: error.message,
+        });
+
+        if (
+            error.message === "Invalid refresh token" ||
+            error.message === "Refresh token has expired" ||
+            error.message === "Refresh token has been revoked"
+        ) {
+            return res.status(401).json({
+                success: false,
+                message: error.message,
+            });
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
+
+export const logout = async (req, res) => {
+    try {
+        const { refresh_token } = req.body;
+
+        await logoutStaff(refresh_token);
+
+        return res.status(200).json({
+            success: true,
+            message: "Logout successful",
+        });
+
+    } catch (error) {
+        logger.error("Logout Error", {
+            error: error.message,
+        });
+
+        if (error.message === "Invalid refresh token") {
+            return res.status(401).json({
+                success: false,
+                message: error.message,
+            });
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
 };
