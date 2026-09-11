@@ -40,7 +40,7 @@ const doc = {
 };
 
 const endpointsFiles = [
-    "./src/routes/auth.routes.js",
+    "./src/routes/adminAuth.routes.js",
     "./src/routes/tenants.routes.js",
     "./src/routes/branches.routes.js",
     "./src/routes/payment_gateways.routes.js",

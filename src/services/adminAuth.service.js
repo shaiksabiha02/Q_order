@@ -1,4 +1,4 @@
-import { findUserByUsername } from "../repositories/auth.repository.js";
+import { findUserByUsername } from "../repositories/adminAuth.repository.js";
 
 const login = async (username, password) => {
     const user = await findUserByUsername(username);
