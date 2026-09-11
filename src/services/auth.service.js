@@ -7,6 +7,8 @@ import {
     findStaffById,
     createAuthSession,
     findAuthSessionByRefreshTokenHash,
+    findGuestSessionByRefreshToken,
+    updateGuestAccessToken,
     revokeAuthSession,
 } from "../repositories/auth.repository.js";
 
@@ -25,6 +27,22 @@ const generateAccessToken = (staff) => {
     );
 };
 
+const generateGuestAccessToken = (guestSession) => {
+    return jwt.sign(
+        {
+            type: "GUEST",
+            guest_id: guestSession.guest_id,
+            table_id: guestSession.table_id,
+            tenant_id: guestSession.tenant_id,
+            branch_id: guestSession.branch_id,
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "12h",
+        }
+    );
+};
+
 const hashRefreshToken = (refreshToken) => {
     return crypto
         .createHash("sha256")
@@ -36,7 +54,9 @@ export const staffLogin = async (username, pin) => {
     const staff = await findStaffByUsername(username);
 
     if (!staff) {
-        throw new Error("Invalid username or PIN");
+        throw new Error(
+            "Invalid username or PIN"
+        );
     }
 
     const validPin = await bcrypt.compare(
@@ -45,21 +65,23 @@ export const staffLogin = async (username, pin) => {
     );
 
     if (!validPin) {
-        throw new Error("Invalid username or PIN");
+        throw new Error(
+            "Invalid username or PIN"
+        );
     }
 
-    const accessToken = generateAccessToken(staff);
+    const accessToken =
+        generateAccessToken(staff);
 
-    const refreshToken = crypto
-        .randomBytes(64)
-        .toString("hex");
+    const refreshToken =
+        crypto.randomBytes(64).toString("hex");
 
-    const refreshTokenHash = hashRefreshToken(
-        refreshToken
-    );
+    const refreshTokenHash =
+        hashRefreshToken(refreshToken);
 
     const expiresAt = new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000
+        Date.now() +
+        7 * 24 * 60 * 60 * 1000
     );
 
     await createAuthSession(
@@ -85,53 +107,95 @@ export const staffLogin = async (username, pin) => {
     };
 };
 
-export const refreshAccessToken = async (refreshToken) => {
-    const refreshTokenHash = hashRefreshToken(
-        refreshToken
-    );
+export const refreshAccessToken = async (
+    refreshToken
+) => {
+    const refreshTokenHash =
+        hashRefreshToken(refreshToken);
 
-    const session =
+    const staffSession =
         await findAuthSessionByRefreshTokenHash(
             refreshTokenHash
         );
 
-    if (!session) {
-        throw new Error("Invalid refresh token");
+    if (staffSession) {
+        if (staffSession.revoked_at) {
+            throw new Error(
+                "Refresh token has been revoked"
+            );
+        }
+
+        if (
+            new Date(staffSession.expires_at) <=
+            new Date()
+        ) {
+            throw new Error(
+                "Refresh token has expired"
+            );
+        }
+
+        const staff = await findStaffById(
+            staffSession.staff_user_id
+        );
+
+        if (!staff) {
+            throw new Error(
+                "Invalid refresh token"
+            );
+        }
+
+        const accessToken =
+            generateAccessToken(staff);
+
+        return {
+            access_token: accessToken,
+            token_type: "Bearer",
+            expires_in: 3600,
+        };
     }
 
-    if (session.revoked_at) {
+    const guestSession =
+        await findGuestSessionByRefreshToken(
+            refreshToken
+        );
+
+    if (!guestSession) {
         throw new Error(
-            "Refresh token has been revoked"
+            "Invalid refresh token"
         );
     }
 
-    if (new Date(session.expires_at) <= new Date()) {
+    if (
+        new Date(guestSession.expires_at) <=
+        new Date()
+    ) {
         throw new Error(
             "Refresh token has expired"
         );
     }
 
-    const staff = await findStaffById(
-        session.staff_user_id
+    const accessToken =
+        generateGuestAccessToken(
+            guestSession
+        );
+
+    await updateGuestAccessToken(
+        guestSession.id,
+        accessToken
     );
-
-    if (!staff) {
-        throw new Error("Invalid refresh token");
-    }
-
-    const accessToken = generateAccessToken(staff);
 
     return {
         access_token: accessToken,
         token_type: "Bearer",
-        expires_in: 3600,
+        expires_in: 43200,
     };
 };
 
-export const logoutStaff = async (refreshToken) => {
-    const refreshTokenHash = hashRefreshToken(
-        refreshToken
-    );
+export const logoutStaff = async (
+    refreshToken
+) => {
+    const refreshTokenHash =
+        hashRefreshToken(refreshToken);
 
     const session =
         await findAuthSessionByRefreshTokenHash(
@@ -139,7 +203,9 @@ export const logoutStaff = async (refreshToken) => {
         );
 
     if (!session) {
-        throw new Error("Invalid refresh token");
+        throw new Error(
+            "Invalid refresh token"
+        );
     }
 
     await revokeAuthSession(session.id);

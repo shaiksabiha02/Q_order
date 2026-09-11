@@ -25,11 +25,6 @@ export const up = (pgm) => {
             notNull: true,
         },
 
-        table_number: {
-            type: "varchar(20)",
-            notNull: true,
-        },
-
         capacity: {
             type: "integer",
             notNull: true,
@@ -70,7 +65,7 @@ export const up = (pgm) => {
         "dining_tables",
         "unique_branch_floor_table",
         {
-            unique: ["branch_id", "floor_id", "table_number"],
+            unique: ["branch_id", "floor_id"],
         }
     );
 

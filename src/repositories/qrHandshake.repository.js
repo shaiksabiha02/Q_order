@@ -28,6 +28,8 @@ export const createGuestSession = async (
     tenantId,
     branchId,
     tableId,
+    accessToken,
+    refreshToken,
     expiresAt
 ) => {
     const query = `
@@ -36,15 +38,19 @@ export const createGuestSession = async (
             tenant_id,
             branch_id,
             table_id,
+            access_token,
+            refresh_token,
             expires_at
         )
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING
             id,
             guest_id,
             tenant_id,
             branch_id,
             table_id,
+            access_token,
+            refresh_token,
             created_at,
             expires_at;
     `;
@@ -56,6 +62,8 @@ export const createGuestSession = async (
             tenantId,
             branchId,
             tableId,
+            accessToken,
+            refreshToken,
             expiresAt,
         ]
     );

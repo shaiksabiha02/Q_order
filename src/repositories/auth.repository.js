@@ -115,3 +115,53 @@ export const revokeAuthSession = async (sessionId) => {
 
     return result.rows[0];
 };
+
+export const findGuestSessionByRefreshToken = async (
+    refreshToken
+) => {
+    const query = `
+        SELECT
+            id,
+            guest_id,
+            tenant_id,
+            branch_id,
+            table_id,
+            access_token,
+            refresh_token,
+            expires_at
+        FROM guest_sessions
+        WHERE refresh_token = $1
+        LIMIT 1;
+    `;
+
+    const result = await pool.query(
+        query,
+        [refreshToken]
+    );
+
+    return result.rows[0];
+};
+
+export const updateGuestAccessToken = async (
+    sessionId,
+    accessToken
+) => {
+    const query = `
+        UPDATE guest_sessions
+        SET access_token = $1
+        WHERE id = $2
+        RETURNING
+            id,
+            access_token;
+    `;
+
+    const result = await pool.query(
+        query,
+        [
+            accessToken,
+            sessionId,
+        ]
+    );
+
+    return result.rows[0];
+};

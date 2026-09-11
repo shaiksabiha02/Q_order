@@ -10,6 +10,7 @@ import restaurantRoutes from "./src/routes/restaurant.routes.js";
 import { swaggerSpec, swaggerUi } from "./swagger.js";
 
 import logger from "./src/config/logger.js";
+import { errorMiddleware } from "./src/middlewares/error.middleware.js";
 
 dotenv.config();
 
@@ -36,6 +37,8 @@ app.get("/", (req, res) => {
     });
 });
 
+app.use(errorMiddleware);
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
@@ -43,3 +46,4 @@ app.listen(PORT, () => {
 });
 
 export default app;
+

@@ -32,6 +32,14 @@ export const up = (pgm) => {
             onDelete: "CASCADE",
         },
 
+        access_token: {
+            type: "text",
+        },
+
+        refresh_token: {
+            type: "text",
+        },
+
         created_at: {
             type: "timestamp with time zone",
             default: pgm.func("current_timestamp"),

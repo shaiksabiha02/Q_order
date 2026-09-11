@@ -17,21 +17,16 @@ export const qrHandshake = async (qrToken) => {
         throw new Error("Table is currently unavailable");
     }
 
+    // Generate unique guest ID
     const guestId = crypto.randomUUID();
 
+    // Access token expiry - 12 hours
     const expiresAt = new Date(
         Date.now() + 12 * 60 * 60 * 1000
     );
 
-    await createGuestSession(
-        guestId,
-        table.tenant_id,
-        table.branch_id,
-        table.id,
-        expiresAt
-    );
-
-    const token = jwt.sign(
+    // Generate Guest Access Token
+    const accessToken = jwt.sign(
         {
             type: "GUEST",
             guest_id: guestId,
@@ -45,8 +40,23 @@ export const qrHandshake = async (qrToken) => {
         }
     );
 
+    // Generate Guest Refresh Token
+    const refreshToken = crypto.randomBytes(64).toString("hex");
+
+    // Store guest session and both tokens
+    await createGuestSession(
+        guestId,
+        table.tenant_id,
+        table.branch_id,
+        table.id,
+        accessToken,
+        refreshToken,
+        expiresAt
+    );
+
     return {
-        access_token: token,
+        access_token: accessToken,
+        refresh_token: refreshToken,
         token_type: "Bearer",
         expires_in: 43200,
 
