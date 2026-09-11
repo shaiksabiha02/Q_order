@@ -68,7 +68,7 @@ export async function getMenuItemById(id) {
 
 export async function createMenuItem(data) {
     const result = await db.query(
-        'INSERT INTO menu_items (tenant_id, category_id, name, description, base_price, image_url, dietary_tag, is_available, created_by, station_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+        'INSERT INTO menu_items (tenant_id, category_id, name, description, base_price, image_url, dietary_tag, is_available, created_by, updated_by, station_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *',
         [
             data.tenant_id,
             data.category_id,
@@ -79,6 +79,7 @@ export async function createMenuItem(data) {
             data.dietary_tag,
             data.is_available ?? true,
             data.created_by,
+            data.updated_by,
             data.station_id
         ]
     );

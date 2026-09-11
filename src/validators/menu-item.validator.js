@@ -10,6 +10,7 @@ const createMenuItemSchema = joi.object({
     is_available: joi.boolean(),
     created_by: joi.string(),
     station_id: joi.string(),
+    updated_by: joi.string(),
     modifier_group_ids: joi.array().items(joi.string())
 });
 const updateMenuItemSchema = joi.object({
