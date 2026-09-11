@@ -1,5 +1,4 @@
 import winston from 'winston';
-
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
@@ -7,5 +6,5 @@ const logger = winston.createLogger({
     new winston.transports.Console()
   ]
 });
-
 export default logger;
+
