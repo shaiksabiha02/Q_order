@@ -3,19 +3,10 @@ import dotenv from "dotenv";
 import logger from "./logger.js";
 
 dotenv.config();
-
-const { Pool } = pg;
-
+const {Pool} = pg;
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
 });
-
-pool.on("error", (err) => {
-    logger.error("PostgreSQL Pool Error", {
-        message: err.message,
-        stack: err.stack
-    });
-});
-
+pool.query("SELECT 1")
+    .then(() => logger.info("Database connection established successfully."));
 export default pool;
-

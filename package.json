@@ -9,6 +9,13 @@
     "dev": "npm run swagger && nodemon server.js",
     "swagger": "node swagger.js",
     "test": "jest"
+    "dev": "nodemon server.js",
+    "test": "jest",
+    "test:cart": "node src/tests/verify_cart.js",
+    "migrate": "node src/migrations/order.migration.js",
+    "migrate:cart": "node src/migrations/cart.migration.js",
+    "seed:cart": "node src/seeders/cart.seeder.js",
+    "seed:assistance": "node src/seeders/assistance.seeder.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -23,10 +30,16 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "twilio": "^6.1.0",
+    "ws": "^8.21.3"
+
+    "razorpay": "^2.9.8",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0"
   },
   "devDependencies": {
     "jest": "^30.0.0",
+    "node-pg-migrate": "^9.0.0",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4"
   }
