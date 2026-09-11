@@ -1,17 +1,35 @@
 import express from "express";
 
-import authController from "../controllers/auth.controller.js";
+import {
+    loginStaff,
+    refreshToken,
+    logout,
+} from "../controllers/auth.controller.js";
 
 import {
-    validateLogin
-} from "../validators/auth.validator.js";
+    handleQrHandshake,
+} from "../controllers/qrHandshake.controller.js";
 
 const router = express.Router();
 
 router.post(
-    "/login",
-    validateLogin,
-    authController.login
+    "/staff/login",
+    loginStaff
+);
+
+router.post(
+    "/refresh",
+    refreshToken
+);
+
+router.post(
+    "/logout",
+    logout
+);
+
+router.post(
+    "/qr-handshake",
+    handleQrHandshake
 );
 
 export default router;

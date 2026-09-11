@@ -1,8 +1,51 @@
 {
   "swagger": "2.0",
   "info": {
+    "title": "Q_ORDER API",
+    "description": "Q_ORDER Backend API Documentation",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter JWT token with Bearer prefix. Example: Bearer YOUR_TOKEN"
+    }
+  },
+  "paths": {
+    "/api/v1/receipts/send-sms": {
+      "post": {
+        "tags": [
+          "Receipts"
+        ],
+        "summary": "Send receipt SMS",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
     "title": "Q-Orders API",
     "version": "1.0.0",
+    "description": "Customer Assistance APIs"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
     "description": "Q-Orders Super Admin APIs"
   },
   "host": "localhost:3000",
@@ -33,6 +76,17 @@
     "http"
   ],
   "paths": {
+    "/api/v1/assistance/request": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "Customer Assistance"
+        ],
     "/login": {
       "post": {
         "description": "",
@@ -76,6 +130,77 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "phone_number",
+                "message",
+                "receipt_reference"
+              ],
+              "properties": {
+                "phone_number": {
+                  "type": "string",
+                  "example": "+916305063942"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Hello! This is your digital receipt from Q_ORDER."
+                },
+                "receipt_reference": {
+                  "type": "string",
+                  "example": "REC-1002"
+                "id",
+                "guest_id",
+                "table_id",
+                "type"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "guest_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "table_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "WATER",
+                    "BILL",
+                    "WAITER"
+                  ]
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/staff/assistance-requests": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "minimum": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
             "schema": {
               "type": "object",
               "properties": {
@@ -93,6 +218,42 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Receipt SMS sent successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Unauthorized - Token missing or invalid"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/feedback": {
+      "post": {
+        "tags": [
+          "Feedback"
+        ],
+        "summary": "Create feedback",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
           "201": {
             "description": "Created"
           },
@@ -145,6 +306,15 @@
           },
           "400": {
             "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "Customer Assistance"
+        ]
+      }
+    },
+    "/api/v1/staff/assistance-requests/{id}": {
+      "patch": {
           },
           "404": {
             "description": "Not Found"
@@ -163,11 +333,50 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "string",
+            "format": "uuid"
             "type": "string"
           },
           {
             "name": "body",
             "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "tenant_id",
+                "branch_id",
+                "order_id",
+                "rating"
+              ],
+              "properties": {
+                "tenant_id": {
+                  "type": "string",
+                  "example": "TENANT_UUID"
+                },
+                "branch_id": {
+                  "type": "string",
+                  "example": "BRANCH_UUID"
+                },
+                "order_id": {
+                  "type": "string",
+                  "example": "ORDER_UUID"
+                },
+                "rating": {
+                  "type": "integer",
+                  "example": 5
+                },
+                "comments": {
+                  "type": "string",
+                  "example": "Excellent service"
+                "status"
+              ],
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "RESOLVED"
+                  ]
             "schema": {
               "type": "object",
               "properties": {
@@ -192,6 +401,16 @@
         ],
         "responses": {
           "201": {
+            "description": "Feedback created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Unauthorized - Token missing or invalid"
+          },
+          "500": {
+            "description": "Internal server error"
             "description": "Created"
           },
           "400": {
@@ -242,6 +461,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "tags": [
+          "Customer Assistance"
+        ]
           "201": {
             "description": "Created"
           },

@@ -1,4 +1,5 @@
 import logger from "../config/logger.js";
+
 const errorMiddleware = (err, req, res, next) => {
     
     logger.error("Error:",err);
