@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-
 import cors from "cors";
 import helmet from "helmet";
 import swaggerDocument from "./swagger-output.json" with { type: "json" };
@@ -8,8 +7,9 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger.js";
 import "./src/config/db.js";
 import logger from './src/config/logger.js';
-
- import cartRouter from "./src/routes/cart.routes.js";
+import cartRouter from "./src/routes/cart.routes.js";
+import receiptRoutes from "./src/routes/receipt.routes.js";
+import feedbackRoutes from "./src/routes/feedback.routes.js";
 
 import authRoutes from "./src/routes/v1/auth.routes.js";
 import tenantsRoutes from "./src/routes/v1/tenants.routes.js";
@@ -33,19 +33,10 @@ import { createKdsSocket } from "./src/sockets/gateways/kds.socket.js";
 import { createTableCartSocket } from "./src/sockets/gateways/tablecart.socket.js";
 import { createOrderTrackingSocket } from "./src/sockets/gateways/ordertracking.socket.js";
 import { createStaffAlertsSocket } from "./src/sockets/gateways/staffalerts.socket.js";
-
-
-
-
 import paymentRoutes from "./src/routes/payment.route.js";
 import billingRoutes from "./src/routes/billing.route.js";
 
 import errorMiddleware from "./src/middlewares/error.middleware.js";
-
-dotenv.config();
-
-const app = express();
-
 
 app.use(cors());
 app.use(helmet());
@@ -64,6 +55,7 @@ app.use(
     swaggerUi.serve,
     swaggerUi.setup(swaggerDocument)
 );
+
 
 app.use((req, res, next) => {
     logger.info(`${req.method} ${req.originalUrl}`);
@@ -88,7 +80,8 @@ app.get("/", (req, res) => {
 
 
 
-
+app.use("/api/v1/receipts", receiptRoutes);
+app.use("/api/v1/feedback", feedbackRoutes);
 app.use("/api/v1/payments",paymentRoutes);
 app.use("/api/v1/billing",billingRoutes);
 
