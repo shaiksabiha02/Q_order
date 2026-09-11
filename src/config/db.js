@@ -1,7 +1,6 @@
 import pg from "pg";
 import dotenv from "dotenv";
 import logger from "./logger.js";
-
 dotenv.config();
 const {Pool} = pg;
 const pool = new Pool({
@@ -9,5 +8,6 @@ const pool = new Pool({
 });
 pool.query("SELECT 1")
     .then(() => logger.info("Database connection established successfully."));
+
 
 export default pool;
