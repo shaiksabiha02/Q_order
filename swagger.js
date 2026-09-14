@@ -778,6 +778,11 @@ swaggerDocument.paths = {
     post: {
       tags: ["Feedback"],
       summary: "Create feedback",
+      security: [
+      {
+        bearerAuth: [],
+      },
+    ],
       requestBody: {
         required: true,
         content: {

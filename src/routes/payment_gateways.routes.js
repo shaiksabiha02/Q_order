@@ -18,7 +18,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/tenants/{id}/payment-gateway:
+ * /api/v1/superadmin/tenants/{id}/payment-gateway:
  *   post:
  *     summary: Create payment gateway
  *     description: Creates and configures a payment gateway for a specific tenant.

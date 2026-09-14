@@ -19,7 +19,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/tenants:
+ * /api/v1/superadmin/tenants:
  *   post:
  *     summary: Create a new tenant
  *     description: Creates a new tenant account in the system.
@@ -56,7 +56,8 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/tenants:
+ * /api/v1/superadmin/tenants:
+ 
  *   get:
  *     summary: Get all tenants
  *     description: Retrieves a list of all tenants.
@@ -78,7 +79,7 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/tenants/{id}/status:
+ * /api/v1/superadmin/tenants/{id}/status:
  *   patch:
  *     summary: Update tenant status
  *     description: Updates the active or inactive status of a tenant.

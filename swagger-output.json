@@ -947,7 +947,7 @@
         }
       }
     },
-    "/api/v1/tenants": {
+    "/api/v1/superadmin/tenants": {
       "post": {
         "summary": "Create a new tenant",
         "description": "Creates a new tenant account in the system.",
@@ -1016,7 +1016,7 @@
         }
       }
     },
-    "/api/v1/tenants/{id}/status": {
+    "/api/v1/superadmin/tenants/{id}/status": {
       "patch": {
         "summary": "Update tenant status",
         "description": "Updates the active or inactive status of a tenant.",
@@ -1151,7 +1151,7 @@
         }
       }
     },
-    "/api/v1/tenants/{id}/payment-gateway": {
+    "/api/v1/superadmin/tenants/{id}/payment-gateway": {
       "post": {
         "summary": "Create payment gateway",
         "description": "Creates and configures a payment gateway for a specific tenant.",
@@ -2256,6 +2256,11 @@
           "Feedback"
         ],
         "summary": "Create feedback",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
