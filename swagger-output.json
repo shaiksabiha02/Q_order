@@ -75,6 +75,18 @@
     {
       "name": "Item Modifier Groups",
       "description": "Item modifier group mapping APIs"
+    },
+    {
+      "name": "Restaurant",
+      "description": "Restaurant profile management APIs"
+    },
+    {
+      "name": "KDS",
+      "description": "Kitchen Display System APIs"
+    },
+    {
+      "name": "Orders",
+      "description": "Order management APIs"
     }
   ],
   "components": {
@@ -673,6 +685,1160 @@
           },
           "500": {
             "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/v1/superadmin/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Super Admin Login",
+        "description": "Authenticate a super admin and return a JWT token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "admin@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Admin@123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Invalid email or password"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/staff/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Staff Login",
+        "description": "Authenticate a staff member and return authentication tokens.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "staff@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Staff@123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Staff login successful"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Refresh Access Token",
+        "description": "Generate a new access token using a refresh token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "YOUR_REFRESH_TOKEN"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Access token refreshed successfully"
+          },
+          "401": {
+            "description": "Invalid or expired refresh token"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Staff Logout",
+        "description": "Logout the authenticated staff member.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          },
+          "401": {
+            "description": "Unauthorized - Token missing or invalid"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/qr-handshake": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "QR Handshake",
+        "description": "Handle the QR code handshake for guest authentication and session initialization.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "QR handshake completed successfully"
+          },
+          "400": {
+            "description": "Invalid QR handshake request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/restaurant/profile": {
+      "get": {
+        "summary": "Get restaurant profile",
+        "description": "Retrieves the profile details of the restaurant associated with the authenticated user, tenant, and branch.",
+        "tags": [
+          "Restaurant"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurant profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Restaurant profile retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Restaurant profile details"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Restaurant profile not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/tenants": {
+      "post": {
+        "summary": "Create a new tenant",
+        "description": "Creates a new tenant account in the system.",
+        "tags": [
+          "Tenants"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "name": "ABC Restaurant",
+                "email": "admin@abcrestaurant.com",
+                "phone": "9876543210"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tenant created successfully"
+          },
+          "400": {
+            "description": "Invalid tenant data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Tenant already exists"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all tenants",
+        "description": "Retrieves a list of all tenants.",
+        "tags": [
+          "Tenants"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tenants retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/tenants/{id}/status": {
+      "patch": {
+        "summary": "Update tenant status",
+        "description": "Updates the active or inactive status of a tenant.",
+        "tags": [
+          "Tenants"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Tenant ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "inactive"
+                    ],
+                    "example": "active"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tenant status updated successfully"
+          },
+          "400": {
+            "description": "Invalid tenant ID or status"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tenant not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/superadmin/tenants/{id}/branches": {
+      "post": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Create a branch",
+        "description": "Create a new branch for a specific tenant.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Tenant UUID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Branch details",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Main Branch"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "Hyderabad"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "+919876543210"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Branch created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Unauthorized - Token missing or invalid"
+          },
+          "404": {
+            "description": "Tenant not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/tenants/{id}/payment-gateway": {
+      "post": {
+        "summary": "Create payment gateway",
+        "description": "Creates and configures a payment gateway for a specific tenant.",
+        "tags": [
+          "Payment Gateways"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Tenant ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "gateway_name",
+                  "api_key"
+                ],
+                "properties": {
+                  "gateway_name": {
+                    "type": "string",
+                    "description": "Name of the payment gateway",
+                    "example": "razorpay"
+                  },
+                  "api_key": {
+                    "type": "string",
+                    "description": "Payment gateway API key",
+                    "example": "rzp_test_xxxxxxxxxxxxx"
+                  },
+                  "secret_key": {
+                    "type": "string",
+                    "description": "Payment gateway secret key",
+                    "example": "xxxxxxxxxxxxxxxx"
+                  },
+                  "is_active": {
+                    "type": "boolean",
+                    "description": "Whether the payment gateway is active",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment gateway created successfully"
+          },
+          "400": {
+            "description": "Invalid tenant ID or payment gateway data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tenant not found"
+          },
+          "409": {
+            "description": "Payment gateway already exists for the tenant"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/staff/tables": {
+      "get": {
+        "tags": [
+          "Dining Tables"
+        ],
+        "summary": "Get dining tables",
+        "description": "Retrieve the dining tables available for the authenticated staff member.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dining tables retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Token missing or invalid"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/staff/tables/{id}/clear": {
+      "post": {
+        "tags": [
+          "Dining Tables"
+        ],
+        "summary": "Clear dining table",
+        "description": "Clear the active order/cart associated with a specific dining table.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Dining table UUID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "c7956816-79c2-4891-bcf9-8c79721301e5"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Table cleared successfully"
+          },
+          "400": {
+            "description": "Invalid table ID"
+          },
+          "401": {
+            "description": "Unauthorized - Token missing or invalid"
+          },
+          "404": {
+            "description": "Dining table not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/superadmin/analytics/gmv": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get GMV analytics",
+        "description": "Retrieve Gross Merchandise Value (GMV) analytics for the business.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GMV analytics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "GMV analytics data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token missing or invalid"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/kds/orders": {
+      "get": {
+        "summary": "Get orders for KDS",
+        "description": "Retrieves orders that are relevant to the Kitchen Display System.",
+        "tags": [
+          "KDS"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/kds/items/{item_id}/status": {
+      "patch": {
+        "summary": "Update KDS item status",
+        "description": "Updates the preparation/status state of an order item in the Kitchen Display System.",
+        "tags": [
+          "KDS"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Order item ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "description": "New status of the order item",
+                    "example": "preparing"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item status updated successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Order item not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/kds/sync": {
+      "get": {
+        "summary": "Synchronize KDS",
+        "description": "Retrieves the latest data required to synchronize the Kitchen Display System.",
+        "tags": [
+          "KDS"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "KDS synchronized successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/kds/print-kot": {
+      "post": {
+        "summary": "Print KOT",
+        "description": "Sends a Kitchen Order Ticket (KOT) for printing.",
+        "tags": [
+          "KDS"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "order_id": "123e4567-e89b-12d3-a456-426614174000"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "KOT sent for printing successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "summary": "Submit a new order",
+        "description": "Creates and submits a new customer order.",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Idempotency-Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Unique UUID v4 key used to prevent duplicate order submissions."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "session_id": "123e4567-e89b-12d3-a456-426614174000",
+                "items": [
+                  {
+                    "menu_item_id": "123e4567-e89b-12d3-a456-426614174001",
+                    "quantity": 2
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order submitted successfully"
+          },
+          "400": {
+            "description": "Invalid order data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Duplicate order request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/orders/session-history": {
+      "get": {
+        "summary": "Get session order history",
+        "description": "Retrieves the order history associated with the current customer session.",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session order history retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid session information"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}/status": {
+      "get": {
+        "summary": "Get order status",
+        "description": "Retrieves the current status of a specific order.",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Order ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order status retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid order ID"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update order status",
+        "description": "Updates the status of a specific order.",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Order ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Tenant-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tenant ID"
+          },
+          {
+            "in": "header",
+            "name": "X-Branch-ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Branch ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "description": "New order status",
+                    "example": "preparing"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order status updated successfully"
+          },
+          "400": {
+            "description": "Invalid order status"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }

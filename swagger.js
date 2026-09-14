@@ -344,6 +344,16 @@ const swaggerOptions = {
   apis: [
     "./src/routes/billing.route.js",
     "./src/routes/payment.route.js",
+     "./src/routes/adminAuth.routes.js",
+    "./src/routes/auth.routes.js",
+    "./src/routes/restaurant.routes.js",
+   "./src/routes/tenants.routes.js",
+   "./src/routes/branches.routes.js",
+   "./src/routes/payment_gateways.routes.js",
+    "./src/routes/diningTables.routes.js",
+   "./src/routes/analytics.routes.js",
+    "./src/routes/kds.routes.js",
+    "./src/routes/order.routes.js",
   ],
 };
 
