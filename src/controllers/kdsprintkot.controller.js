@@ -1,4 +1,5 @@
 import * as kdsService from "../services/kds.service.js";
+import logger from "../config/logger.js";
 
 export const printKot = async (req, res) => {
   try {
@@ -23,6 +24,7 @@ export const printKot = async (req, res) => {
       success: true,
       data: result
     });
+
   } catch (error) {
     logger.error(`Error creating KOT print job: ${error.message}`);
 
