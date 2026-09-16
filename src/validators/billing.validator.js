@@ -1,7 +1,5 @@
 import Joi from "joi";
 
-
-
 const billingSummarySchema = Joi.object({
     tenantId: Joi.string()
         .required()
@@ -28,7 +26,6 @@ export const validateBillingSummary = (data) => {
         throw err;
     }
 };
-
 
 
 
@@ -105,7 +102,7 @@ const splitBillSchema = Joi.object({
 })
 .custom((value, helpers) => {
 
-    // Only validating assigned parts for BY_ITEM
+    
     if (value.splitType === "BY_ITEM") {
 
         for (const item of value.items) {

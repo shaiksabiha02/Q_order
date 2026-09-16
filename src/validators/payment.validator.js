@@ -1,7 +1,5 @@
 import Joi from "joi";
 
-
-
 const paymentIntentSchema = Joi.object({
     tenantId: Joi.string()
         .required()
