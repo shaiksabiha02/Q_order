@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-// Validation for Payment Intent
+
 
 const paymentIntentSchema = Joi.object({
     tenantId: Joi.string()
@@ -45,7 +45,7 @@ export const validatePaymentIntent = (data) => {
 };
 
 
-// Validation for Cash Request
+
 
 const cashRequestSchema = Joi.object({
     tenantId: Joi.string()

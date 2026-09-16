@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-// Validation for Billing Summary
+
 
 const billingSummarySchema = Joi.object({
     tenantId: Joi.string()
@@ -30,7 +30,7 @@ export const validateBillingSummary = (data) => {
 };
 
 
-// Validation for Split Bill
+
 
 const splitBillSchema = Joi.object({
     tenantId: Joi.string()
